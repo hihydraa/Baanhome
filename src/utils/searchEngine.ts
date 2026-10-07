@@ -305,12 +305,18 @@ export async function askGemini(
 
   // No early return when nothing matches: the server decides (DeepSeek can still
   // answer within the Baanhome role scope; otherwise it falls back to a "please verify" reply).
+  // Client-side timeout so the UI never spins forever; caller's abort still wins
+  const timeoutController = new AbortController();
+  const timeoutId = setTimeout(() => timeoutController.abort(), 35000);
+  const onCallerAbort = () => timeoutController.abort();
+  signal?.addEventListener('abort', onCallerAbort);
+
   try {
     const res = await fetch('/api/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query, contextItems: customerReadyItems }),
-      signal
+      signal: timeoutController.signal
     });
 
     if (!res.ok) {
@@ -319,6 +325,7 @@ export async function askGemini(
     }
 
     const data = await res.json();
+    if (data?.isFallback) console.warn('Ask AI fallback:', data.fallbackReason);
     
     // Clean any stray reference lines from answer for pristine customer messaging
     const rawAnswer = String(data.answer || '');
@@ -335,12 +342,19 @@ export async function askGemini(
     return { answer: cleanAnswer, referenceIds };
   } catch (error: any) {
     if (error?.name === 'AbortError') {
-      throw error; // Let caller know it was deliberately cancelled
+      if (signal?.aborted) throw error; // Let caller know it was deliberately cancelled
+      return {
+        answer: "น้องโฮม AI ตอบช้ากว่าปกติค่ะ ลองกด \"เรียบเรียงใหม่\" อีกครั้ง หรือดูข้อมูลจากผลการค้นหาด้านล่างนะคะ 💚",
+        referenceIds: []
+      };
     }
     console.warn("Ask Gemini Notice:", error?.message || error);
     return {
       answer: "ระบบผู้ช่วย AI ขัดข้องชั่วคราวค่ะ โปรดดูข้อมูลจากการค้นหาด้านล่างนะคะ 💚",
       referenceIds: []
     };
+  } finally {
+    clearTimeout(timeoutId);
+    signal?.removeEventListener('abort', onCallerAbort);
   }
 }

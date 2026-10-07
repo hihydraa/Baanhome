@@ -1,4 +1,5 @@
 const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
+const DEEPSEEK_TIMEOUT_MS = 20000;
 
 export function buildNongHomeSystemPrompt(contextItems: any[]): string {
   const contextText = Array.isArray(contextItems) && contextItems.length > 0
@@ -37,8 +38,10 @@ export async function askDeepSeek(
   query: string,
   contextItems: any[],
 ): Promise<string> {
+  // DeepSeek can hold a connection open for a long time under load; fail fast instead of hanging
   const response = await fetch(DEEPSEEK_URL, {
     method: 'POST',
+    signal: AbortSignal.timeout(DEEPSEEK_TIMEOUT_MS),
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${apiKey}`,
@@ -46,6 +49,7 @@ export async function askDeepSeek(
     body: JSON.stringify({
       model: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
       temperature: 0.4,
+      max_tokens: 800,
       messages: [
         { role: 'system', content: buildNongHomeSystemPrompt(contextItems) },
         { role: 'user', content: String(query || '') },

@@ -132,6 +132,7 @@ ${contextText}
 
     return res.status(200).json({ answer: cleanAnswer, referenceIds });
   } catch (error: any) {
+    console.error('[api/ask] AI request failed:', error?.message || error);
     let fallbackText = '';
     if (Array.isArray(contextItems) && contextItems.length > 0) {
       const topItem = contextItems[0];
@@ -152,6 +153,7 @@ ${contextText}
       answer: cleanCustomerResponse(fallbackText),
       referenceIds: Array.isArray(contextItems) ? contextItems.map((c: any) => c.id) : [],
       isFallback: true,
+      fallbackReason: String(error?.name === 'TimeoutError' ? 'timeout' : error?.message || 'unknown').slice(0, 200),
     });
   }
 }

@@ -142,6 +142,7 @@ ${contextText}
 
       res.json({ answer: cleanAnswer, referenceIds });
     } catch (error: any) {
+      console.error('[api/ask] AI request failed:', error?.message || error);
       // Graceful smart context fallback without throwing unhandled exceptions
       let fallbackText = '';
       if (Array.isArray(contextItems) && contextItems.length > 0) {
@@ -162,7 +163,8 @@ ${contextText}
       res.json({ 
         answer: cleanCustomerResponse(fallbackText),
         referenceIds: Array.isArray(contextItems) ? contextItems.map((c: any) => c.id) : [],
-        isFallback: true 
+        isFallback: true,
+        fallbackReason: String(error?.name === 'TimeoutError' ? 'timeout' : error?.message || 'unknown').slice(0, 200)
       });
     }
   });
