@@ -88,6 +88,16 @@ async function startServer() {
   app.use(express.json());
   app.post('/api/nong-home-analytics', nongHomeAnalytics);
 
+  app.get('/api/ai-status', (_req, res) => {
+    const hasDeepSeek = Boolean(process.env.DEEPSEEK_API_KEY);
+    const hasGemini = Boolean(process.env.GEMINI_API_KEY);
+    res.json({
+      activeProvider: hasDeepSeek ? 'deepseek' : hasGemini ? 'gemini' : 'none',
+      deepseekKeyConfigured: hasDeepSeek,
+      geminiKeyConfigured: hasGemini,
+    });
+  });
+
   // AI API Route
   app.post('/api/ask', async (req, res) => {
     const { query, contextItems } = req.body || {};
