@@ -40,7 +40,7 @@ import {
   getLocalQuestionLogs,
   getLocalUnansweredQuestions
 } from './utils/firebase';
-import { getSyncedKnowledgeItems, syncKnowledgeWithServer } from './utils/googleSheetsSync';
+import { getSyncedKnowledgeItems, syncKnowledgeWithServer, withPdfKnowledge } from './utils/googleSheetsSync';
 import { 
   GoogleSheetsDbConfig, 
   getStoredSheetsConfig, 
@@ -596,7 +596,7 @@ export default function App() {
         onClose={() => setShowSheetsSyncModal(false)}
         currentActiveItems={activeKnowledgeItems}
         onApplySyncedItems={(items, fromSheet) => {
-          setActiveKnowledgeItems(items);
+          setActiveKnowledgeItems(fromSheet ? withPdfKnowledge(items) : items);
           setIsUsingCustomSheet(fromSheet);
         }}
         isUsingCustomSheet={isUsingCustomSheet}

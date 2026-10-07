@@ -143,7 +143,7 @@ const INTENT_MAPPINGS: IntentMapping[] = [
   },
   {
     patterns: /เบอร์โทร|โทร|ติดต่อ|line\s*oa|facebook|เบอร์|ช่องทางติดต่อ/i,
-    boostKeywords: ['ติดต่อ', 'โทร', '098-345-5545', 'line', 'line oa', '@baanhome', 'facebook'],
+    boostKeywords: ['ติดต่อ', 'โทร', '098-342-5545', 'line', 'line oa', '@baanhome', 'facebook'],
     priorityIds: ['KH-006', 'BH-003'],
     targetCategories: ['business-profile', 'customer-service']
   }

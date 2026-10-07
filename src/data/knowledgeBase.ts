@@ -54,10 +54,10 @@ const LEGACY_BH_ITEMS: KnowledgeItem[] = [
     category: 'business-profile',
     title: 'ช่องทางติดต่อบ้านโฮม',
     keywords: ['ติดต่อ', 'โทร', 'เบอร์โทร', 'line', 'line oa', 'facebook', 'agoda', 'เบอร์ติดต่อ', 'ช่องทางติดต่อ'],
-    customerMessage: 'ติดต่อบ้านโฮมได้ทางโทร 098-345-5545, LINE OA @baanhome (https://lin.ee/VwKjwIt) และ Facebook Page: บ้านโฮม สวนอาหาร&รีสอร์ท ยางตลาดค่ะ 💚',
-    summary: 'ช่องทางหลัก: โทร 098-345-5545 / LINE OA @baanhome / Facebook / Agoda',
+    customerMessage: 'ติดต่อบ้านโฮมได้ทางโทร 098-342-5545, LINE OA @baanhome (https://lin.ee/VwKjwIt) และ Facebook Page: บ้านโฮม สวนอาหาร&รีสอร์ท ยางตลาดค่ะ 💚',
+    summary: 'ช่องทางหลัก: โทร 098-342-5545 / LINE OA @baanhome / Facebook / Agoda',
     detail: [
-      'เบอร์โทรศัพท์: 098-345-5545',
+      'เบอร์โทรศัพท์: 098-342-5545',
       'LINE Official Account: @baanhome (ลิงก์: https://lin.ee/VwKjwIt)',
       'Facebook: บ้านโฮม สวนอาหาร&รีสอร์ท ยางตลาด',
       'OTA Platform: Agoda สำหรับการจองห้องพักออนไลน์',

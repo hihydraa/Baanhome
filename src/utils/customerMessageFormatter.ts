@@ -220,7 +220,7 @@ export function generateHospitalityMessage(
     }
 
     lines.push('');
-    lines.push('หากหน่วยงานหรือองค์กรของท่านประสงค์ขอรับใบเสนอราคา หรือตรวจสอบความพร้อมของสถานที่ล่วงหน้า สามารถประสานงานได้ที่หมายเลขโทรศัพท์ 098-345-5545 หรือ LINE Official: @baanhome');
+    lines.push('หากหน่วยงานหรือองค์กรของท่านประสงค์ขอรับใบเสนอราคา หรือตรวจสอบความพร้อมของสถานที่ล่วงหน้า สามารถประสานงานได้ที่หมายเลขโทรศัพท์ 098-342-5545 หรือ LINE Official: @baanhome');
     lines.push('ขอขอบพระคุณที่ให้ความไว้วางใจในบริการของบ้านโฮม');
 
     return lines.join('\n');
@@ -239,7 +239,7 @@ export function generateHospitalityMessage(
     shortLines.push(`• ${item.summary}`);
   }
 
-  shortLines.push('สอบถามจองห้องหรือรายละเอียดเพิ่มเติม: 098-345-5545 ค่ะ 🌿');
+  shortLines.push('สอบถามจองห้องหรือรายละเอียดเพิ่มเติม: 098-342-5545 ค่ะ 🌿');
   return shortLines.join('\n');
 }
 
@@ -252,7 +252,7 @@ function convertToFormalTone(text: string, title: string): string {
     .replace(/[🌿💚😊✨📍🍽️🎉]/g, '')
     .trim();
 
-  return `เรียน ท่านผู้มีอุปการคุณ\n\nเกี่ยวกับ ${title} ขอเรียนแจ้งข้อมูลดังนี้:\n\n${cleaned}\n\nหากท่านต้องการข้อมูลเพิ่มเติมหรือเอกสารใบเสนอราคา สามารถติดต่อได้ที่ 098-345-5545\nขอขอบพระคุณเป็นอย่างยิ่งค่ะ`;
+  return `เรียน ท่านผู้มีอุปการคุณ\n\nเกี่ยวกับ ${title} ขอเรียนแจ้งข้อมูลดังนี้:\n\n${cleaned}\n\nหากท่านต้องการข้อมูลเพิ่มเติมหรือเอกสารใบเสนอราคา สามารถติดต่อได้ที่ 098-342-5545\nขอขอบพระคุณเป็นอย่างยิ่งค่ะ`;
 }
 
 /**
@@ -261,5 +261,5 @@ function convertToFormalTone(text: string, title: string): string {
 function convertToConciseTone(text: string): string {
   const lines = text.split('\n').filter((l) => l.trim().length > 0);
   const keyLines = lines.slice(0, 4);
-  return keyLines.join('\n') + '\n\nติดต่อเพิ่มเติม: 098-345-5545 หรือ LINE @baanhome ค่ะ';
+  return keyLines.join('\n') + '\n\nติดต่อเพิ่มเติม: 098-342-5545 หรือ LINE @baanhome ค่ะ';
 }

@@ -1,5 +1,6 @@
 import { KnowledgeItem, KnowledgeCategory, AudienceType, DataStatusType } from '../types';
 import { KNOWLEDGE_BASE_ITEMS } from '../data/knowledgeBase';
+import { BROCHURE_KNOWLEDGE_ITEMS } from '../data/brochureKnowledgeItems';
 import { isCompetitorKnowledge } from './knowledgeFilter';
 
 const STORAGE_KEY_ITEMS = 'nonghome_synced_knowledge_items';
@@ -244,6 +245,15 @@ export async function fetchGoogleSheet(urlOrId: string): Promise<KnowledgeItem[]
   }
 }
 
+/**
+ * รวมความรู้จาก Google Sheet กับรายการจาก PDF (โบรชัวร์ Mini MICE / เล่มเมนู BH 2026)
+ * รายการที่ id ซ้ำกัน ให้ยึดของ Google Sheet; ถ้าเนื้อหาขัดกัน AI ถูกสั่งให้ยึด Google Sheet (ดู lib/deepseek.ts)
+ */
+export function withPdfKnowledge(sheetItems: KnowledgeItem[]): KnowledgeItem[] {
+  const ids = new Set(sheetItems.map((i) => i.id));
+  return [...sheetItems, ...BROCHURE_KNOWLEDGE_ITEMS.filter((b) => !ids.has(b.id))];
+}
+
 export function saveSyncedKnowledgeItems(items: KnowledgeItem[], sheetUrl?: string): void {
   const lastTime = new Date().toISOString();
   try {
@@ -279,7 +289,7 @@ export function syncKnowledgeWithServer(onLoaded?: (items: KnowledgeItem[]) => v
           localStorage.setItem(STORAGE_KEY_ITEMS, JSON.stringify(data.items));
           if (data.sheetUrl) localStorage.setItem(STORAGE_KEY_URL, data.sheetUrl);
           if (data.lastSynced) localStorage.setItem(STORAGE_KEY_LAST_SYNC, data.lastSynced);
-          if (onLoaded) onLoaded(data.items);
+          if (onLoaded) onLoaded(withPdfKnowledge(data.items));
         }
       })
       .catch(() => {});
@@ -290,7 +300,7 @@ export function getSyncedKnowledgeItems(): KnowledgeItem[] | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_ITEMS);
     if (!raw) return null;
-    return JSON.parse(raw);
+    return withPdfKnowledge(JSON.parse(raw));
   } catch {
     return null;
   }
