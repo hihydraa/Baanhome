@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { setCorsHeaders } from '../lib/cors.js';
+import { askDeepSeek } from '../lib/deepseek.js';
 
 function cleanCustomerResponse(text: string): string {
   if (!text) return '';
@@ -80,6 +81,13 @@ export default async function handler(req: any, res: any) {
   const { query, contextItems } = req.body || {};
 
   try {
+    const deepseekKey = process.env.DEEPSEEK_API_KEY;
+    if (deepseekKey) {
+      const answerText = await askDeepSeek(deepseekKey, query, contextItems);
+      const referenceIds = Array.isArray(contextItems) ? contextItems.map((c: any) => c.id) : [];
+      return res.status(200).json({ answer: cleanCustomerResponse(answerText), referenceIds });
+    }
+
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return res.status(500).json({

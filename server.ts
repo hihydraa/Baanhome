@@ -2,6 +2,7 @@ import nongHomeAnalytics from './api/nong-home-analytics.js';
 import centralB2B from './api/sync/b2b.js';
 import centralUsers from './api/sync/users.js';
 import { applyB2BMutation } from './lib/b2bMutation.js';
+import { askDeepSeek } from './lib/deepseek.js';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -91,9 +92,15 @@ async function startServer() {
   app.post('/api/ask', async (req, res) => {
     const { query, contextItems } = req.body || {};
     try {
+      if (process.env.DEEPSEEK_API_KEY) {
+        const answerText = await askDeepSeek(process.env.DEEPSEEK_API_KEY, query, contextItems);
+        const referenceIds = Array.isArray(contextItems) ? contextItems.map((c: any) => c.id) : [];
+        return res.json({ answer: cleanCustomerResponse(answerText), referenceIds });
+      }
+
       if (!process.env.GEMINI_API_KEY) {
-        return res.status(500).json({ 
-          error: 'Missing GEMINI_API_KEY', 
+        return res.status(500).json({
+          error: 'Missing GEMINI_API_KEY',
           fallbackMessage: 'ไม่สามารถติดต่อผู้ช่วย AI ได้เนื่องจากไม่ได้ตั้งค่า API Key' 
         });
       }
