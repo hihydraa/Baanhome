@@ -74,8 +74,23 @@ export default async function handler(req: any, res: any) {
     return res.status(200).end();
   }
 
+  // GET /api/ask reports which AI provider is active (never returns key values).
+  // Kept in this file because Vercel Hobby allows at most 12 serverless functions.
+  if (req.method === 'GET') {
+    const hasDeepSeek = Boolean(process.env.DEEPSEEK_API_KEY);
+    const hasGemini = Boolean(process.env.GEMINI_API_KEY);
+    return res.status(200).json({
+      activeProvider: hasDeepSeek ? 'deepseek' : hasGemini ? 'gemini' : 'none',
+      deepseekKeyConfigured: hasDeepSeek,
+      geminiKeyConfigured: hasGemini,
+      deepseekModel: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
+      vercelEnv: process.env.VERCEL_ENV || null,
+      commit: (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7) || null,
+    });
+  }
+
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed. Use POST.' });
+    return res.status(405).json({ error: 'Method Not Allowed. Use GET or POST.' });
   }
 
   const { query, contextItems } = req.body || {};
