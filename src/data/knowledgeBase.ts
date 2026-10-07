@@ -1,5 +1,6 @@
 import { KnowledgeItem } from '../types';
 import { MASTER_KNOWLEDGE_ITEMS } from './masterKnowledgeItems';
+import { BROCHURE_KNOWLEDGE_ITEMS } from './brochureKnowledgeItems';
 import { COMPETITOR_BATTLECARDS_ITEMS } from './competitorBattlecards';
 
 /**
@@ -823,8 +824,9 @@ const LEGACY_BH_ITEMS: KnowledgeItem[] = [
  */
 export const KNOWLEDGE_BASE_ITEMS: KnowledgeItem[] = [
   ...MASTER_KNOWLEDGE_ITEMS,
+  ...BROCHURE_KNOWLEDGE_ITEMS,
   ...COMPETITOR_BATTLECARDS_ITEMS,
   ...LEGACY_BH_ITEMS,
 ];
 
-export { MASTER_KNOWLEDGE_ITEMS, COMPETITOR_BATTLECARDS_ITEMS, LEGACY_BH_ITEMS };
+export { MASTER_KNOWLEDGE_ITEMS, BROCHURE_KNOWLEDGE_ITEMS, COMPETITOR_BATTLECARDS_ITEMS, LEGACY_BH_ITEMS };
