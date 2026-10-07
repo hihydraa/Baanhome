@@ -141,8 +141,8 @@ export const CorporateSearchUI: React.FC<CorporateSearchUIProps> = ({
     if (!q) return;
 
     const resultsToUse = customResults || searchOutcome?.results || [];
+    // No early return when nothing matches: น้องโฮม AI may still answer within the Baanhome role scope
     const customerReadyResults = resultsToUse.filter(r => isCustomerReady(r.item));
-    if (customerReadyResults.length === 0) return;
 
     // Abort previous call if still running
     if (aiAbortControllerRef.current) {
@@ -221,7 +221,7 @@ export const CorporateSearchUI: React.FC<CorporateSearchUIProps> = ({
     }
 
     // 2. AUTO AI MODE (Only if explicitly enabled by user)
-    if (autoAiMode && finalOutcome.results.length > 0) {
+    if (autoAiMode) {
       const aiTimer = setTimeout(() => {
         handleTriggerAi(debouncedQuery, finalOutcome.results);
       }, 600);
@@ -545,7 +545,7 @@ export const CorporateSearchUI: React.FC<CorporateSearchUIProps> = ({
           ) : (
             <>
               {/* AI Answer Section */}
-              {Boolean(searchOutcome?.results && searchOutcome.results.length > 0) && (() => {
+              {Boolean(searchOutcome && debouncedQuery.trim()) && (() => {
                 const isCompetitorSearch = searchOutcome?.results?.[0] && isCompetitorKnowledge(searchOutcome.results[0].item);
 
                 return (
@@ -581,7 +581,9 @@ export const CorporateSearchUI: React.FC<CorporateSearchUIProps> = ({
                                 <p className="text-[11px] text-[#A3B8AC]">
                                   {isCompetitorSearch 
                                     ? 'ข้อมูลวิเคราะห์คู่แข่ง & จุดขายสำหรับพนักงานภายใน (ห้ามส่งต่อให้ลูกค้าภายนอก)' 
-                                    : 'ประมวลผลจากฐานข้อมูลบ้านโฮม พร้อมส่งให้ลูกค้า'}
+                                    : resultCount === 0
+                                      ? 'ตอบจากความรู้ทั่วไปในขอบเขตงานบ้านโฮม ไม่ได้มาจากฐานข้อมูล โปรดตรวจสอบก่อนส่งลูกค้า'
+                                      : 'ประมวลผลจากฐานข้อมูลบ้านโฮม พร้อมส่งให้ลูกค้า'}
                                 </p>
                               </div>
                             </div>
@@ -674,7 +676,9 @@ export const CorporateSearchUI: React.FC<CorporateSearchUIProps> = ({
                             <span className="text-[10px] font-semibold px-2 py-0.5 bg-[#EEF5EC] text-[#2D5A43] rounded-md">พร้อมช่วยสรุป</span>
                           </div>
                           <p className="text-xs text-[#708477] mt-0.5">
-                            ต้องการให้ AI ช่วยเรียบเรียงข้อความสุภาพสำหรับส่งลูกค้าจากข้อมูลด้านล่างไหมคะ?
+                            {resultCount === 0
+                              ? 'ไม่พบข้อมูลตรงในฐานความรู้ ให้น้องโฮม AI ช่วยตอบในขอบเขตงานบ้านโฮมไหมคะ?'
+                              : 'ต้องการให้ AI ช่วยเรียบเรียงข้อความสุภาพสำหรับส่งลูกค้าจากข้อมูลด้านล่างไหมคะ?'}
                           </p>
                         </div>
                       </div>
