@@ -1,6 +1,7 @@
 import { KnowledgeItem, KnowledgeCategory, AudienceType, DataStatusType } from '../types';
 import { KNOWLEDGE_BASE_ITEMS } from '../data/knowledgeBase';
 import { BROCHURE_KNOWLEDGE_ITEMS } from '../data/brochureKnowledgeItems';
+import { MENU_DISH_ITEMS } from '../data/menuDishItems';
 import { isCompetitorKnowledge } from './knowledgeFilter';
 
 const STORAGE_KEY_ITEMS = 'nonghome_synced_knowledge_items';
@@ -251,7 +252,7 @@ export async function fetchGoogleSheet(urlOrId: string): Promise<KnowledgeItem[]
  */
 export function withPdfKnowledge(sheetItems: KnowledgeItem[]): KnowledgeItem[] {
   const ids = new Set(sheetItems.map((i) => i.id));
-  return [...sheetItems, ...BROCHURE_KNOWLEDGE_ITEMS.filter((b) => !ids.has(b.id))];
+  return [...sheetItems, ...[...BROCHURE_KNOWLEDGE_ITEMS, ...MENU_DISH_ITEMS].filter((b) => !ids.has(b.id))];
 }
 
 export function saveSyncedKnowledgeItems(items: KnowledgeItem[], sheetUrl?: string): void {
